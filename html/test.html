@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>単位円とSine波のアニメーション</title>
+  <!-- p5.jsのライブラリ（最新バージョン）を読み込み -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
+  <style>
+    body { margin: 0; padding: 0; }
+    canvas { display: block; margin: auto; }
+  </style>
+</head>
+<body>
+<script>
+let angle = 0;
+let sineHistory = [];
+
+function setup() {
+  // キャンバスサイズは800x400、左側が単位円、右側がグラフ用エリア
+  createCanvas(800, 400);
+}
+
+function draw() {
+  background(255);
+
+  // 単位円の設定
+  const cx = 200, cy = 200, r = 150;
+  
+  // 単位円を描く
+  stroke(0);
+  noFill();
+  ellipse(cx, cy, r * 2);
+
+  // 現在の角度における円周上の点（角度はラジアン）
+  let x = cx + r * cos(angle);
+  let y = cy + r * sin(angle);
+
+  // 単位円の中心から円周上の点へ赤い線（半径）を描く
+  stroke(255, 0, 0);
+  line(cx, cy, x, y);
+
+  // 円周上の点から水平線（単位円の中心の高さ）への青い線を描く
+  stroke(0, 0, 255);
+  line(x, y, x, cy);
+
+  // 円周上の動く点を描く
+  fill(0);
+  noStroke();
+  ellipse(x, y, 8, 8);
+
+  // 投影された点を描く
+  fill(0, 0, 255);
+  ellipse(x, cy, 8, 8);
+
+  // 現在の角度（度数法）とSineの値をテキスト表示
+  fill(0);
+  noStroke();
+  textSize(16);
+  text("角度: " + nf(degrees(angle), 1, 2) + "°", 10, 20);
+  text("Sine: " + nf(sin(angle), 1, 2), 10, 40);
+
+  // Sine波グラフ用に、現在のsin(angle)の値を履歴に追加
+  sineHistory.push(sin(angle));
+  // グラフエリア（右側の幅はキャンバス幅の400ピクセル）を超えた場合は、古い値を削除
+  if (sineHistory.length > width - 400) {
+    sineHistory.shift();
+  }
+
+  // 右側のエリアにSine波グラフを描く
+  push();
+  // グラフ描画の原点を(400,200)に移動（左側から余白を取る）
+  translate(400, 200);
+  // 横軸を描く
+  stroke(0);
+  line(0, 0, width - 400, 0);
+  
+  // Sine波グラフ（緑色）の描画。スケールは適宜調整（ここでは±1を±50ピクセルに変換）
+  stroke(0, 150, 0);
+  noFill();
+  beginShape();
+  for (let i = 0; i < sineHistory.length; i++) {
+    let sx = i;
+    let sy = -sineHistory[i] * 50; // 上方向がマイナスになるよう反転
+    vertex(sx, sy);
+  }
+  endShape();
+  pop();
+
+  // 角度を徐々に増加させる
+  angle += 0.02;
+  // 1周（TWO_PI）経過したら角度とグラフ履歴をリセット
+  if (angle > TWO_PI) {
+    angle -= TWO_PI;
+    sineHistory = [];
+  }
+}
+</script>
+</body>
+</html>
