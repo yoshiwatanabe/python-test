@@ -33,7 +33,7 @@ function setup() {
   const pauseButton = document.getElementById('pauseButton');
   pauseButton.addEventListener('click', () => {
     isPaused = !isPaused;
-    pauseButton.textContent = isPaused ? 'Resume' : 'Pause';
+    pauseButton.textContent = isPaused ? '再開' : '一時停止';
   });
 }
 
@@ -57,11 +57,11 @@ function draw() {
   line(cx, cy, x, y);
 
   // 円周上の点から水平線（単位円の中心の高さ）への青い線を描く
-  stroke(0, 0, 255);
+  stroke(0, 255, 0);
   line(x, y, x, cy);
 
   // 円周上の点から垂直線（単位円の中心の左右）への青い線を描く
-  stroke(0, 255, 0);
+  stroke(0, 0, 255);
   line(x, y, cx, y);
 
   // 円周上の動く点を描く
